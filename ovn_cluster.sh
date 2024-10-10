@@ -19,11 +19,11 @@ OS_IMAGE=${OS_IMAGE:-"quay.io/fedora/fedora:latest"}
 OS_IMAGE_PULL_RETRIES=${OS_IMAGE_PULL_RETRIES:-40}
 OS_IMAGE_PULL_INTERVAL=${OS_IMAGE_PULL_INTERVAL:-5}
 USE_OVSDB_ETCD=${USE_OVSDB_ETCD:-no}
-CHASSIS_PREFIX="${CHASSIS_PREFIX:-chassis-}"
-GW_PREFIX="gateway-"
+CHASSIS_PREFIX="${CHASSIS_PREFIX:-cp-}"
+GW_PREFIX="gw-"
 
 CENTRAL_COUNT=${CENTRAL_COUNT:-1}
-CENTRAL_PREFIX="${CENTRAL_PREFIX:-central-}"
+CENTRAL_PREFIX="${CENTRAL_PREFIX:-ct-}"
 CENTRAL_NAME="${CENTRAL_NAME:-}"
 CENTRAL_NAMES=()
 
@@ -720,6 +720,27 @@ function start() {
     done
 
     configure-ovn $ovn_central $ovn_remote ${OVN_MONITOR_ALL} ${OVN_DP_TYPE}
+
+    # Set environment variables for ease of use 
+
+    for name in "${CENTRAL_NAMES[@]}"; do 
+        
+        alias ovn-nbctl="docker exec ${name} ovn-nbctl"
+        alias ovn-sbctl="docker exec ${name} ovn-sbctl"
+
+    done
+
+    for name in "${GW_NAMES[@]}"; do 
+        alias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
+        alias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
+    done
+ 
+    for name in "${CHASSIS_NAMES[@]}"; do 
+        alias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
+        alias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
+    done
+
+
 }
 
 function create_fake_vms() {
