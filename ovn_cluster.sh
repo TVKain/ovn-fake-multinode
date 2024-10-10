@@ -196,6 +196,26 @@ function stop() {
     for cid in $( ${RUNC_CMD} ps -qa --filter "name=${CENTRAL_PREFIX}|${GW_PREFIX}|${CHASSIS_PREFIX}" ); do
        stop-container ${cid}
     done
+
+    echo "Clean up alias"
+    # Unalias the ovn-ctl command
+     for name in "${CENTRAL_NAMES[@]}"; do 
+        
+        unalias ovn-nbctl="docker exec ${name} ovn-nbctl"
+        unalias ovn-sbctl="docker exec ${name} ovn-sbctl"
+
+    done
+
+    for name in "${GW_NAMES[@]}"; do 
+        unalias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
+        unalias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
+    done
+ 
+    for name in "${CHASSIS_NAMES[@]}"; do 
+        unalias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
+        unalias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
+    done
+
 }
 
 function setup-ovs-in-host() {
@@ -723,8 +743,8 @@ function start() {
 
     # Set environment variables for ease of use 
 
+    echo "Setting up aliases"
     for name in "${CENTRAL_NAMES[@]}"; do 
-        
         alias ovn-nbctl="docker exec ${name} ovn-nbctl"
         alias ovn-sbctl="docker exec ${name} ovn-sbctl"
 
