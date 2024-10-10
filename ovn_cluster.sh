@@ -197,24 +197,7 @@ function stop() {
        stop-container ${cid}
     done
 
-    echo "Clean up alias"
-    # Unalias the ovn-ctl command
-     for name in "${CENTRAL_NAMES[@]}"; do 
-        
-        unalias ovn-nbctl="docker exec ${name} ovn-nbctl"
-        unalias ovn-sbctl="docker exec ${name} ovn-sbctl"
-
-    done
-
-    for name in "${GW_NAMES[@]}"; do 
-        unalias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
-        unalias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
-    done
- 
-    for name in "${CHASSIS_NAMES[@]}"; do 
-        unalias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
-        unalias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
-    done
+    
 
 }
 
@@ -740,27 +723,6 @@ function start() {
     done
 
     configure-ovn $ovn_central $ovn_remote ${OVN_MONITOR_ALL} ${OVN_DP_TYPE}
-
-    # Set environment variables for ease of use 
-
-    echo "Setting up aliases"
-    for name in "${CENTRAL_NAMES[@]}"; do 
-        alias ovn-nbctl="docker exec ${name} ovn-nbctl"
-        alias ovn-sbctl="docker exec ${name} ovn-sbctl"
-
-    done
-
-    for name in "${GW_NAMES[@]}"; do 
-        alias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
-        alias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
-    done
- 
-    for name in "${CHASSIS_NAMES[@]}"; do 
-        alias ovs-ofctl-${name}="docker exec ${name} ovs-ofctl"
-        alias ovs-vsctl-${name}="docker exec ${name} ovs-vsctl"
-    done
-
-
 }
 
 function create_fake_vms() {
