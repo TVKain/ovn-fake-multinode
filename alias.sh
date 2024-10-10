@@ -1,6 +1,6 @@
 central="ct-1-1"
 
-chassises=("gw-1", "cp-1", "cp-2")
+chassises=("gw-1" "cp-1" "cp-2")
 
 for chassis in ${chassises[@]}; do
     alias ovs-ofctl-${chassis}="docker exec ${chassis} ovs-ofctl"
