@@ -18,6 +18,7 @@ Step 1: Build the container images
 
 By default, podman is used (users can control the container runtime through
 the `RUNC_CMD` environment variable):
+
 ```
 sudo OVN_SRC_PATH=<path_to_ovn_src_folder> OVS_SRC_PATH=<path_to_ovs_src_folder> ./ovn_cluster.sh build
 ```
@@ -37,16 +38,19 @@ by two environment variables:
 Step 2: Start openvswitch in your host
 
 In order to interconnect the containers that emulate the chassis, we need an underlay network. This step is what provides that.
+
 ```
 sudo /usr/share/openvswitch/scripts/ovs-ctl --system-id=testovn start
 ```
 
 Step 3: Start the ovn-fake-multinode
+
 ```
 sudo ./ovn_cluster.sh start
 ```
 
 Step 4: Stop the ovn-fake-multinode and tweak cluster as needed
+
 ```
 sudo ./ovn_cluster.sh stop
 
@@ -58,11 +62,12 @@ vi ./ovn_cluster.sh
 
 ### Getting into underlay
 
-A port called *ovnfake-ext* is created in the fake underlay
-network as part of *ovn_cluster.sh start*. You can use that
+A port called _ovnfake-ext_ is created in the fake underlay
+network as part of _ovn_cluster.sh start_. You can use that
 as an easy way of getting inside the cluster (via NAT in OVN).
-Look for *ip netns add ovnfake-ext* in *ovn_cluster.sh*.
+Look for _ip netns add ovnfake-ext_ in _ovn_cluster.sh_.
 An example for doing that is shown here:
+
 ```
 sudo ip netns exec ovnfake-ext bash
 ip a
@@ -72,9 +77,10 @@ ping -i 1 -c 1 -w 1 172.16.0.110 >/dev/null && \
 exit
 ```
 
-Similarly, a port called *ovnfake-int* is created in the fake node
+Similarly, a port called _ovnfake-int_ is created in the fake node
 network. It can be used to access the emulated chassis.
 Here is an example:
+
 ```
 sudo ip netns exec ovnfake-int bash
 ip a
@@ -84,10 +90,12 @@ exit
 ```
 
 ### Pre-provisioning NB and/or SB databases.
+
 It's sometime useful to be able to start up a cluster with pre-existing
 OVN NB and/or SB databases. For example, when debugging an issue from
 a real production cluster. In order to achieve that the `OVN_NBDB_SRC
 and `OVN_SBDB_SRC` variables can be used:
+
 ```
 OVN_NBDB_SRC=some-nb.db OVN_SBDB_SRC=some-sb.db ./ovn_cluster.sh start
 ```

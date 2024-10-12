@@ -316,6 +316,24 @@ function del-ovs-container-ports() {
     ./ovs-runc del-port $OVN_EXT_BR eth2 ${name} || :
 }
 
+## tvkain: Add proxy file, im behind a proxy :(
+
+function add_proxy() {
+
+    rm -f ${FAKENODE_MNT_DIR}/add_proxy.sh
+
+    cat << EOF > ${FAKENODE_MNT_DIR}/add_proxy.sh
+#!/bin/bash
+
+export no_proxy=localhost,127.0.0.0/8,10.11.1.0/24,10.11.2.0/24,10.11.3.0/24,10.11.5.0/24,10.11.6.0/24
+export https_proxy=http://10.9.0.25:8080
+export http_proxy=http://10.9.0.25:8080
+
+EOF
+
+    chmod 0755 ${FAKENODE_MNT_DIR}/add_proxy.sh
+}
+
 function configure-ovn() {
     ovn_central=$1
     ovn_remote=$2
@@ -369,7 +387,11 @@ ovs-vsctl add-port br-ex eth2
 ip link set eth2 up
 EOF
 
+
     chmod 0755 ${FAKENODE_MNT_DIR}/configure_ovn.sh
+
+    add_proxy
+
 
     index=1
     if [ "$ovn_central" == "yes" ]; then
@@ -723,6 +745,8 @@ function start() {
     done
 
     configure-ovn $ovn_central $ovn_remote ${OVN_MONITOR_ALL} ${OVN_DP_TYPE}
+
+
 }
 
 function create_fake_vms() {
