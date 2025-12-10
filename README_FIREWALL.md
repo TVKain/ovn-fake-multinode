@@ -85,10 +85,15 @@ Step 6: Start `ovn-fake-multinode`
 ```
 
 Step 7: Go into `ovn-central` and run `create-topo.sh`
+
 Step 8: Go into `ovn-chassis-1` and run `create-vm.sh` 
+
 Step 9: On the physical host run `create-public-ns.sh <namespace_name> <IP for public>`
+
 Step 10: Test ping from the VM `ping <public ip>`
+
 Step 11: Run `create-firewall.sh`
+
 Step 12: Play around
 
 ## Scripts
